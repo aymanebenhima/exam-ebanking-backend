@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class SecurityController {
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
     private JwtEncoder jwtEncoder;
     @GetMapping("/profile")
     public Authentication authentication(Authentication authentication) {
@@ -37,6 +38,7 @@ public class SecurityController {
         );
         Instant instant = Instant.now();
         String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
+
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .issuedAt(instant)
                 .expiresAt(instant.plus(10, ChronoUnit.MINUTES))
@@ -48,7 +50,7 @@ public class SecurityController {
                         JwsHeader.with(MacAlgorithm.HS512).build(),
                         jwtClaimsSet
                 );
-        Jwt jwt = jwtEncoder.encode(jwtEncoderParameters);
+        String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
         return Map.of("access-token",jwt);
     }
 }
