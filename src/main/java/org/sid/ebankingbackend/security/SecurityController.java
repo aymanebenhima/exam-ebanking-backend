@@ -48,7 +48,7 @@ public class SecurityController {
                         JwsHeader.with(MacAlgorithm.HS512).build(),
                         jwtClaimsSet
                 );
-        Jwt jwt = jwtEncoder.encode(jwtEncoderParameters);
+        String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
         return Map.of("access-token",jwt);
     }
 }
